@@ -7,11 +7,11 @@
 % epsilon : Pas de la descente de gradient
 % tol : arret de la descente si le crit�re < tol
 
-%tol=10e-9, maxiter=50
-function [A, critere, niter, bad_cond] = riemann_mean(B,args)
+
+function [A, critere, niter, bad_cond] = riemann_mean_weighted(B,W,args)
 
 N_itermax = 200; %changed from 100 to 200 by E. Kalunga
-if (nargin<2)||(isempty(args))
+if (nargin<3)||(isempty(args))
     tol = 10^-5;
     if size(B,3)>1  %Added by E. Kalunga
         A = mean(B,3);
@@ -38,7 +38,8 @@ while (niter<N_itermax)
        break; 
     end
     % arithmetic mean in tangent space
-    TA = mean(T,2);
+    %TA = mean(T,2);
+    TA = w_mean(T,2,W); % function for weighted mean writen by E. Kalunga                  <===================== W is the weight obtained from Kullback divergence
     % back to the manifold
     A_1 = A;
     A = UnTangent_space(TA,A);

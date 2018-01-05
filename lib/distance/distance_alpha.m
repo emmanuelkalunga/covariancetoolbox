@@ -21,7 +21,7 @@
 %
 %   Project : BCI-EEG
 %
-%   author : A. Barachant
+%   author : A. Barachant /Emmanuel K. Kalunga
 %   date : 2011-XXXX
 %   version : 1.0 
 %   status : a terminer, termin�   
@@ -31,13 +31,11 @@
 
 % [EOF: XXX.m]
 
-function d = distance(C1,C2,method_dist,arg_dist)
+function d = distance_alpha(C1,C2,method_dist, alpha)
 
 if (nargin<3)||(isempty(method_dist))
     method_dist = 'euclid';
-end
-if (nargin<4)
-    arg_dist = {};
+    alpha = 0;
 end
 
 switch method_dist
@@ -45,14 +43,20 @@ switch method_dist
         d = distance_riemann(C1,C2);
     case 'kullback'
         d = distance_kullback(C1,C2);
+    case 'jeffreys'
+	d = distance_jeffreys(C1,C2);
     case 'logeuclid'
         d = distance_logeuclid(C1,C2);
     case 'opttransp'
         d = distance_opttransp(C1,C2);
     case 'ld'
-        d = distance_ld(C1,C2);
+        d = distance_ld_alpha(C1,C2,alpha);
     case 'wasserstein'
-        d = distance_wasserstein(C1,C2);
+        d = distance_wasserstein(C1,C2); %EK
+    case 'sdivergence'
+        d = distance_sdiv(C1,C2); %EK
+    case 'harmonic'
+        d = distance_harm(C1,C2); %EK
     otherwise
         d = sqrt(norm(C1-C2,'fro'));
 end

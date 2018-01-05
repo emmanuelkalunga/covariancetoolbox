@@ -8,7 +8,7 @@
 % tol : arret de la descente si le crit�re < tol
 
 %tol=10e-9, maxiter=50
-function [A, critere, niter, bad_cond] = riemann_mean(B,args)
+function [A, sum_dis, critere, niter, bad_cond] = riemann_mean_analysis(B,args)
 
 N_itermax = 200; %changed from 100 to 200 by E. Kalunga
 if (nargin<2)||(isempty(args))
@@ -26,6 +26,11 @@ end
 niter = 0;
 fc = 0;
 bad_cond = 0;
+
+sum_dis(niter+1) = 0;
+for m = 1:size(B,3)
+    sum_dis(niter+1) = sum_dis(niter+1) + (distance_riemann(A,B(:,:,m)))^2;
+end
 while (niter<N_itermax)
     niter = niter+1;
     % Tangent space mapping
@@ -42,6 +47,10 @@ while (niter<N_itermax)
     % back to the manifold
     A_1 = A;
     A = UnTangent_space(TA,A);
+    sum_dis(niter+1) = 0;
+    for m = 1:size(B,3)
+        sum_dis(niter+1) = sum_dis(niter+1) + (distance_riemann(A,B(:,:,m)))^2;
+    end
     %Stop when there is NaN and/or Inf in matrices in B %Added by E. Kalunga
     %**************************************************************
     if (sum(sum(isnan(A))) || sum(sum(isinf(A)))) 

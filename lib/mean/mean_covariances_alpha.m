@@ -31,14 +31,15 @@
 
 % [EOF: XXX.m]
 
-function C = mean_covariances(COV,method_mean,arg_mean)
+function C = mean_covariances_alpha(COV,method_mean,alpha)
 
 if (nargin<2)||(isempty(method_mean))
     method_mean = 'arithmetic';
 end
-if (nargin<3)
-    arg_mean = {};
-end
+% if (nargin<3)
+%     arg_mean = {};
+% end
+arg_mean = {};
 
 switch method_mean
     case 'riemann'
@@ -56,7 +57,7 @@ switch method_mean
     case 'opttransp'
         C = opttransp_mean(COV);
     case 'ld'
-        C = logdet_mean(COV);
+        C = logdet_mean_alpha(COV,alpha); 
     case 'kullback'
         C = kullback_mean_alpha(COV,alpha);
     case 'jeffreys'
@@ -74,11 +75,12 @@ switch method_mean
         for i=2:size(COV,3)
             B = B*COV(:,:,i);
         end
-        C = B^(1/size(COV,3));   
+        C = abs(B^(1/size(COV,3))); %EK
+        %C = B^(1/size(COV,3)); 
     case 'wasserstein'
-        C = wasserstein_mean(COV);
+        C = wasserstein_mean(COV); %EK
     case 'sdivergence'
-            C = sdiv_mean(COV);
+        C = sdiv_mean(COV);
     otherwise
         C = mean(COV,3);
 end

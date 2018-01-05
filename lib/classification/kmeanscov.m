@@ -43,6 +43,4 @@ function [Ytest d C] = kmeanscov(Ctest,Ctrain,Nclass,varargin)
         end
     end
     
-    [~,Ytest] = min(d,[],2);
-
-   
+    [~,Ytest] = min(d,[],2);   

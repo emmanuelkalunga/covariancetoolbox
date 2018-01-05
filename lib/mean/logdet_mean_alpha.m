@@ -2,29 +2,31 @@
 % Zeineb Chebbi , Maher Moakher.
 
 
-function A = logdet_mean(B)
+function [A curve] = logdet_mean_alpha(B,alpha)
 
 K = size(B,3); % Nombre de matrices
 A = mean(B,3);
- tol = 10^-3;
-%tol = 10^-10;
+% tol = 10^-3;
+tol = 10^-10;
 imp = tol + 1;
-%cnt = 0; %Emmanuel K. Kalunga
-while imp>tol
+cnt = 0; %Emmanuel K. Kalunga
+maxiter=100;
+while (imp>tol) && (cnt < maxiter)
+    cnt = cnt+1;
     fc = zeros(size(B,1));
 
     for i=1:K
-        fc = fc + inv(0.5*B(:,:,i) + 0.5*A);
-        %fc = fc + inv(((1-alpha)/2)*B(:,:,i) + ((1+alpha)/2)*A);
+        %fc = fc + inv(0.5*B(:,:,i) + 0.5*A);
+        fc = fc + inv(((1-alpha)/2)*B(:,:,i) + ((1+alpha)/2)*A);
     end
 
     Anew = inv(fc/K);
-    imp = distance_ld(Anew,A);
+    imp = distance_ld_alpha(Anew,A,alpha);
     A = Anew;
-    %cnt = cnt+1;
+    curve(cnt) = imp;
 end
-%imp
-%cnt
+% imp
+% cnt
 
 function B = mypseudoinv(A)
     [U S] = svd(A);

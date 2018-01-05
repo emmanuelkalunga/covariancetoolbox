@@ -31,18 +31,19 @@
 
 % [EOF: XXX.m]
 
-function C = mean_covariances(COV,method_mean,arg_mean)
+function C = mean_covariances_alpha_weight(COV,method_mean,alpha,W)
 
 if (nargin<2)||(isempty(method_mean))
     method_mean = 'arithmetic';
 end
-if (nargin<3)
-    arg_mean = {};
-end
+% if (nargin<3)
+%     arg_mean = {};
+% end
+arg_mean = {};
 
 switch method_mean
     case 'riemann'
-        C = riemann_mean(COV,arg_mean);
+        C = riemann_mean_weighted(COV,W,arg_mean);
     case 'riemanndiag'
         C = riemann_diag_mean(COV,arg_mean);    
     case 'riemanntrim'
@@ -56,11 +57,7 @@ switch method_mean
     case 'opttransp'
         C = opttransp_mean(COV);
     case 'ld'
-        C = logdet_mean(COV);
-    case 'kullback'
-        C = kullback_mean_alpha(COV,alpha);
-    case 'jeffreys'
-	C = jeffreys_mean(COV);
+        C = logdet_mean_alpha(COV,alpha);    
     case 'geodesic'
         C = geodesic_mean(COV,arg_mean);
     case 'harmonic'
@@ -74,11 +71,7 @@ switch method_mean
         for i=2:size(COV,3)
             B = B*COV(:,:,i);
         end
-        C = B^(1/size(COV,3));   
-    case 'wasserstein'
-        C = wasserstein_mean(COV);
-    case 'sdivergence'
-            C = sdiv_mean(COV);
+        C = B^(1/size(COV,3));        
     otherwise
         C = mean(COV,3);
 end
